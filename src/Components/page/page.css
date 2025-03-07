@@ -53,11 +53,11 @@ li{
 a{
     width:108px;
 }
-#gradientBackground {
+/* #gradientBackground {
     background: linear-gradient(20deg, #02aaf3, #0eecb5);
     height: 100vh;
     width: 100vw;
-  }
+  } */
   .content{
     height: auto;
   }
