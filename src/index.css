@@ -10,7 +10,7 @@
     overflow-x: hidden;
  }
  *{
-    background-image: url('C:\Users\user\Documents\Moi-Tech\VJAN-Moi-Tech\src\assets\background\Bckgrund.jpg');
+    background-image: url('./assets/background/Bckgrund.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

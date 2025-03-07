@@ -1,91 +1,191 @@
-import React, { useState } from "react";
+
+
+
+
+
+
+import React, { useEffect, useState } from "react";
+import "./AdminRegister.css";
 import Header from "../header/header";
+// import { useState } from 'react';
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
+// import Button from 'react-bootstrap/Button';
+// import Form from 'react-bootstrap/Form';
 import Footer from "../footer/footer";
-import { Form, Button } from "react-bootstrap";
-import './AdminRegister.css'
+import { Alert } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 const AdminRegister = () => {
   const [AdminUser, SetAdminUser] = useState({
-    Name:"",
-    Mobile:"",
-    Password:"",
-    ConfPassword:"",
+    Name: "",
+    Mobile: "",
+    Password: "",
+    ConfPassword: "",
     Email: "",
   });
-  const handleSubmit = ()=>{
+  // var box=document.getElementById('check')
+  let [isAgreed, setIsAgreed] = useState(false);
 
-  }
+  let handleCheckBox = (e) => {
+    setIsAgreed (e.target.checked)
+  };
+  const handleChange = (e) => {
+    const Name = e.target.name;
+    const Value = e.target.value;
+    SetUser({
+      ...User,
+      [Name]: Value,
+    });
+  };
+  const [errors, SetErrors] = useState({});
+  // const ip=false;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+
+    if (!AdminUser.Name) {
+      newErrors.Name = "user name is mandatory";
+    }
+    if (!AdminUser.Mobile) {
+      newErrors.Mobile = "user mobile no is mandatory";
+    } else if (isNaN(AdminUser.Mobile)) {
+      newErrors.Mobile = "Mobile Number should be an integer value ";
+    } else if (AdminUser.Mobile.length !== 10) {
+      newErrors.Mobile = "Mobile Number should be min & max 10 ";
+    }
+    if (!AdminUser.Password) {
+      newErrors.Password = "Enter Password";
+    } else if (AdminUser.Password.length < 8) {
+      newErrors.Password = "Password should contain minimum 8 values ";
+    }
+    if (!AdminUser.ConfPassword) {
+      newErrors.ConfPassword = "Confirmatory password is required";
+    } else if (AdminUser.ConfPassword !== AdminUser.Password) {
+      newErrors.ConfPassword = "Password & Confirm password must be match";
+    }
+    if (!AdminUser.Email) {
+      newErrors.Email = "Email is mandatory";
+    }
+    if (!isAgreed) {
+      newErrors.Agreement = "Terms & Conditions should be accepted ";
+    }
+
+    SetErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const response = await axios.post("http://localhost:3000/user", User);
+        console.log("User Register Successfully: ", User);
+        toast.success("Registration Successfull");
+        SetAdminUser({
+          Name: "",
+          Mobile: "",
+          Password: "",
+          ConfPassword: "",
+          Email: "",
+        });
+      } catch (error) {
+        console.log("Error in Registering User", error);
+        toast.error("Registration failed please try again");
+      }
+    } else {
+      // console.log('Signin validation failed',newErrors);
+      // console.log('User Data: ',User);
+      Object.values(newErrors).forEach((err) => {
+        toast.warning(err);
+      });
+    }
+  };
+  const notify = () => toast();
 
   return (
     <>
       <Header />
-      <section className="container">
-        <div className="row">
+      <div className="register-banner">
+        {/* <img src="https://moitech.in/img/registerbanner.jpg"
+          //  style={{position:"relative",display:"inline-block"}} alt="" class="register-banner"/> */}
+        <div className="inner-banner row">
           <div className="col-lg-6">
-            <h2 className="text-center">Earn with us Grow with us</h2>
+            <h2
+              className="mt-5"
+              style={{
+                textAlign: "center",
+                padding: "120px",
+                color: "MenuText",
+              }}
+            >
+             Earn with us Grow with us
+            </h2>
           </div>
           <div className="col-lg-6">
-            <h2 className="text-center">Sign in</h2>
-            <Form id="Logform" onSubmit={handleSubmit} >
-                <Form.Group className="mb-3" controlId="formBasicMobile">
+            <div className="register">
+              <h2 style={{ color: "black", textAlign: "center" }}>
+               Sign in
+              </h2>
+              <Form id="Logform" onSubmit={handleSubmit} className="inner-form">
+                <Form.Group id="formInput" className="inputt">
                   <Form.Control
                     id="formInput"
                     name="Name"
                     placeholder="Name"
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     value={AdminUser.Name}
-                    style={{width:'70%'}}
                     type="text"
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicMobile">
+                <Form.Group id="formInput" className="inputt">
                   <Form.Control
-                    id="formInput"
                     name="Mobile"
                     placeholder="Mobile Number"
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     value={AdminUser.Mobile}
-                    style={{width:'70%'}}
                     type="text"
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicMobile">
+                <Form.Group id="formInput" className="inputt">
                   <Form.Control
-                    id="formInput"
                     name="Password"
                     placeholder="Password"
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     value={AdminUser.Password}
-                    style={{width:'70%'}}
                     type="password"
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicMobile">
+                <Form.Group id="formInput" className="inputt">
                   <Form.Control
-                    id="formInput"
                     name="ConfPassword"
                     placeholder="Confirm Password"
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     value={AdminUser.ConfPassword}
-                    style={{width:'70%'}}
                     type="password"
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicMobile">
+                <Form.Group id="formInput" className="inputt">
                   <Form.Control
-                    id="formInput"
                     name="Email"
-                    placeholder="Email"
-                    // onChange={handleChange}
+                    placeholder="Email Id"
+                    onChange={handleChange}
                     value={AdminUser.Email}
-                    style={{width:'70%'}}
                     type="email"
                   />
                 </Form.Group>
-            </Form>
+                <Form.Check
+                  type="checkbox"
+                  checked={isAgreed}
+                  onChange={handleCheckBox}
+                  label="I agree to Event Planning terms of services"
+                />
+                <Button type="submit">Register</Button>
+                <ToastContainer />
+              </Form>
+            </div>
           </div>
         </div>
-      </section>
-      <Footer />
+        <Footer />
+      </div>
     </>
   );
 };
